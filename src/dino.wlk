@@ -23,6 +23,7 @@ object juego{
 		dino.iniciar()
 		reloj.iniciar()
 		cactus.iniciar()
+		// hola
 	}
 	
 	method jugar(){
