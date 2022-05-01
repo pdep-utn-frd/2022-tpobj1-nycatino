@@ -12,6 +12,8 @@ object juego{
 		game.addVisual(cactus)
 		game.addVisual(dino)
 		game.addVisual(reloj)
+		game.addVisual(boton)
+		game.addVisual(sol)
 	
 		keyboard.space().onPressDo{ self.jugar()}
 		
@@ -23,7 +25,7 @@ object juego{
 		dino.iniciar()
 		reloj.iniciar()
 		cactus.iniciar()
-		// hola
+		boton.iniciar()
 	}
 	
 	method jugar(){
@@ -40,6 +42,7 @@ object juego{
 		game.addVisual(gameOver)
 		cactus.detener()
 		reloj.detener()
+		boton.detener()
 		dino.morir()
 	}
 	
@@ -61,6 +64,11 @@ object reloj {
 	
 	method pasarTiempo() {
 		tiempo = tiempo +1
+		if (tiempo == 500)
+			game.addVisual(quinientos)
+		if (tiempo == 507)
+			game.removeVisual(quinientos)
+			
 	}
 	method iniciar(){
 		tiempo = 0
@@ -69,11 +77,22 @@ object reloj {
 	method detener(){
 		game.removeTickEvent("tiempo")
 	}
+	method tiempo(){
+		return tiempo
+	}
+	
+}
+
+object quinientos {
+	method position()= game.at(0.9, game.height()-7)
+	method image()= "500.png"
+
+			
 }
 
 object cactus {
 	 
-	const posicionInicial = game.at(game.width()-1,suelo.position().y())
+	const posicionInicial = game.at(game.width()-2,suelo.position().y())
 	var position = posicionInicial
 
 	method image() = "cactus.png"
@@ -103,8 +122,57 @@ object suelo{
 	method position() = game.origin().up(1)
 	
 	method image() = "suelo.png"
+
 }
 
+object boton{
+	const posicionInicial = game.at(game.width(),suelo.position().y())
+	var position = posicionInicial
+	var x=0
+	
+	method position()= position
+	method image()= "butonn.png"
+	
+	method iniciar(){
+		position = posicionInicial
+		game.onTick(velocidad,"moverBoton",{self.mover()})
+	}
+	
+	method mover(){
+		position = position.left(1)
+		if (position.x() == -1)
+			position = posicionInicial
+	}
+	
+	method chocar(){
+		x=x+1
+		if ((x%2) != 0) {
+			game.removeVisual(sol)
+			game.addVisual(luna)
+			}
+			else {
+				game.addVisual(sol)
+				game.removeVisual(luna)
+			}
+
+	}
+	
+    method detener(){
+		game.removeTickEvent("moverBoton")
+	}
+}
+
+object sol{
+	
+	method image()= "sol.1.png"
+	method position()= game.at(game.width()-2,game.height()-2)
+}
+
+object luna{
+	
+	method image()= "luna.1.png"
+	method position()= game.at(game.width()-2,game.height()-2)
+}
 
 object dino {
 	var vivo = true
